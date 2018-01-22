@@ -1,4 +1,4 @@
-﻿@model ProductSanaCommerce.Models.Product
+﻿@model ProductSanaCommerce.Models.ProductList
 
 <div id="product-list">
     <div class="container"> 
@@ -8,31 +8,79 @@
                 <hr class="lineTitle"> 
             </div>
         </div>
-		@using (Html.BeginForm("AddProduct", "Products", FormMethod.Post, new { @class = "form-horizontal", id = "formId", }))  
-		{
+		@using (Ajax.BeginForm("AddProduct", "Products", new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { id = "FormProduct" }))   
+    {
             <div class="form-group">
                 <div class="row">
                     <div class="col-lg-4 col-sm-4 col-xs-3">
-					   @Html.TextBoxFor(m=> m.Name, new { @class = "form-control", id="name", placeholder = "Name"})
+					   @Html.TextBoxFor(m=> m.product.Name, new { @class = "form-control", id="name", placeholder = "Name"})
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-2">
-					    @Html.TextBoxFor(m=> m.Price, new { @class = "form-control", id="price", placeholder = "Price"})
+					    @Html.TextBoxFor(m=> m.product.Price, new { @class = "form-control", id="price", placeholder = "Price"})
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-2">
-					    @Html.TextBoxFor(m=> m.Quantity, new { @class = "form-control", id="quantity", placeholder = "Quantity"})
+					    @Html.TextBoxFor(m=> m.product.Quantity, new { @class = "form-control", id="quantity", placeholder = "Quantity"})
                     </div>
                 </div>  
             </div>
             <div class="form-group">
                     <div class="row">
                         <div class="col-lg-6 col-sm-6 col-xs-4">
-					        @Html.TextAreaFor(m=> m.Description, new { @class = "form-control", id="description", placeholder = "Description"})
+					        @Html.TextAreaFor(m=> m.product.Description, new { @class = "form-control", id="description", placeholder = "Description"})
                         </div>
                         <div class="col-lg-2 col-sm-2 col-xs-1">
                             <button type="submit" class="btn btn-primary addproducts">Agregar</button>
                         </div>
                     </div>
-            </div>                                       
+            </div>
+
+            <div id="progress">
+			    <table class="table">
+                  <thead>
+                    <tr>
+					  <th>Id</th>
+                      <th>Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Description</th>    
+                      </tr>
+                      <thead>
+                      <tbody id="tableHtml">
+					@if(Model.productList != null)
+                    {
+                            for (int i = 0; i < @Model.productList.Count; i++) {
+                                    <tr>
+                                        <td>@(i+1)</td>
+                                        <td>@Model.productList[i].Name</td>
+                                        <td>@Model.productList[i].Price</td>
+                                        <td>@Model.productList[i].Quantity</td>
+                                        <td>@Model.productList[i].Description</td>
+                                    </tr> 
+                    }
+					}
+     </tbody>
+                </table>
+                            </div>
+		
            }		
   </div>
 </div>
+
+<script type="text/javascript">  
+    function OnSuccess(response) {  
+	    var html = "";
+	    $('#FormProduct')[0].reset();
+        for (var i = 0; i < response.data.length; i++){
+	        html +="<tr>"+
+            "<td>"+ (i+1) + "</td>"+
+            "<td>"+ response.data[i].Name + "</td>"+
+            "<td>"+ response.data[i].Price + "</td>"+
+            "<td>"+ response.data[i].Quantity + "</td>"+
+            "<td>"+ response.data[i].Description + "</td>"+"</tr>";
+	}
+	$("#tableHtml").html(html); 
+     }  
+    function OnFailure(data) {  
+        console.log('Error ');  
+     }  
+</script>  

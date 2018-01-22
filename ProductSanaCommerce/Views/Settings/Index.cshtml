@@ -1,0 +1,24 @@
+﻿@model ProductSanaCommerce.Models.Settings
+
+@using (Html.BeginForm("SaveOptions", "Settings", FormMethod.Post))
+{
+    <div class="container" id="dropdownSettings"> 
+        <div class = "row">
+    <div class="form-group">
+        @Html.LabelFor(m=> m.OptionStorage, new { @class = "col-md-2 control-label" })
+        <div class="col-lg-3 col-md-6 col-xs-8">
+            @Html.DropDownListFor(m => m.OptionStorage, new SelectList(new List<SelectListItem>{
+				new SelectListItem { Text = "In-Memory" , Value = "0", Selected = true},
+                new SelectListItem { Text = "In File", Value = "1" }},
+                "Value",
+                "Text",
+                "True"),
+                 new { @class = "form-control" })
+        </div>	
+          <button type="submit" class="btn btn-success">Submit</button>
+    </div>	
+		
+		</div>
+        </div>
+    
+}
