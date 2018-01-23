@@ -21,12 +21,6 @@ namespace ProductSanaCommerce.Controllers
 
 
         [HttpGet]
-        public ActionResult Redirect(ProductList products)
-        {
-            return View(products);
-        }
-
-        [HttpGet]
         public ActionResult Index()
         {
             ProductList productList = new ProductList();
@@ -38,7 +32,8 @@ namespace ProductSanaCommerce.Controllers
                 .Value;
             if(OptionStorage == "0")
             {
-                var a = OptionStorage;
+                if (Session["Products"] != null)
+                    productList = (ProductList)Session["Products"];
                 return View(productList);
             }
             else if (OptionStorage == "1")
@@ -77,15 +72,16 @@ namespace ProductSanaCommerce.Controllers
                 .Value;
             if (OptionStorage == "0")
             {
-                ModelState.Clear();
+                if (Session["Products"] != null)
+                    productList = (ProductList)Session["Products"]; 
                 productList.productList.Insert(0, new Product { Name = products.product.Name, Price = products.product.Price, Quantity = products.product.Quantity, Description = products.product.Description });
-                return View("Redirect", productList);
+                Session["Products"] = productList;
+                return Json(new { data = productList }, JsonRequestBehavior.AllowGet);
             }
             else if (OptionStorage == "1")
             {
 
                 string productCsv = string.Empty;
-                List<Product> Products = new List<Product>();
                 string fileCSV = pathFile + nameFile + extensionFile;
                 using (StreamWriter wfile = new StreamWriter(fileCSV, true))
                 {
@@ -103,10 +99,10 @@ namespace ProductSanaCommerce.Controllers
                     {
                         productCsv = r.ReadLine();
                         string[] values = productCsv.Split(',');
-                        Products.Insert(0, new Product { Name = values[0], Price = float.Parse(values[1]), Quantity = Convert.ToInt32(values[2]), Description = values[3] });
+                        productList.productList.Insert(0, new Product { Name = values[0], Price = float.Parse(values[1]), Quantity = Convert.ToInt32(values[2]), Description = values[3] });
                     }
                 }
-                return Json(new { data = Products }, JsonRequestBehavior.AllowGet);
+                return Json(new { data = productList }, JsonRequestBehavior.AllowGet);
             }
             else
                 return View();

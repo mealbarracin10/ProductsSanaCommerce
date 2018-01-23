@@ -13,12 +13,15 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-lg-4 col-sm-4 col-xs-3">
+					   @Html.ValidationMessageFor(m=> m.product.Name)
 					   @Html.TextBoxFor(m=> m.product.Name, new { @class = "form-control", id="name", placeholder = "Name"})
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-2">
+					    @Html.ValidationMessageFor(m=> m.product.Price)
 					    @Html.TextBoxFor(m=> m.product.Price, new { @class = "form-control", id="price", placeholder = "Price"})
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-2">
+					    @Html.ValidationMessageFor(m=> m.product.Quantity)
 					    @Html.TextBoxFor(m=> m.product.Quantity, new { @class = "form-control", id="quantity", placeholder = "Quantity"})
                     </div>
                 </div>  
@@ -26,6 +29,7 @@
             <div class="form-group">
                     <div class="row">
                         <div class="col-lg-6 col-sm-6 col-xs-4">
+                        @Html.ValidationMessageFor(m=> m.product.Description)
 					        @Html.TextAreaFor(m=> m.product.Description, new { @class = "form-control", id="description", placeholder = "Description"})
                         </div>
                         <div class="col-lg-2 col-sm-2 col-xs-1">
@@ -46,7 +50,8 @@
                       </tr>
                       <thead>
                       <tbody id="tableHtml">
-					@if(Model.productList != null)
+					@{
+                    if(Model.productList != null)
                     {
                             for (int i = 0; i < @Model.productList.Count; i++) {
                                     <tr>
@@ -57,7 +62,8 @@
                                         <td>@Model.productList[i].Description</td>
                                     </tr> 
                     }
-					}
+                    }
+                    }
      </tbody>
                 </table>
                             </div>
@@ -67,16 +73,16 @@
 </div>
 
 <script type="text/javascript">  
-    function OnSuccess(response) {  
+    function OnSuccess(response) {
 	    var html = "";
 	    $('#FormProduct')[0].reset();
-        for (var i = 0; i < response.data.length; i++){
+        for (var i = 0; i < response.data.productList.length; i++){
 	        html +="<tr>"+
             "<td>"+ (i+1) + "</td>"+
-            "<td>"+ response.data[i].Name + "</td>"+
-            "<td>"+ response.data[i].Price + "</td>"+
-            "<td>"+ response.data[i].Quantity + "</td>"+
-            "<td>"+ response.data[i].Description + "</td>"+"</tr>";
+            "<td>"+ response.data.productList[i].Name + "</td>"+
+            "<td>"+ response.data.productList[i].Price + "</td>"+
+            "<td>"+ response.data.productList[i].Quantity + "</td>"+
+            "<td>"+ response.data.productList[i].Description + "</td>"+"</tr>";
 	}
 	$("#tableHtml").html(html); 
      }  
